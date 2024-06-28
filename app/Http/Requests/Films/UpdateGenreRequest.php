@@ -22,7 +22,7 @@ class UpdateGenreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'movie_genre' => 'sometimes|required|string|max:255',
+            'genre' => 'sometimes|required|string|max:255',
             'genre_description' => 'nullable|string|max:500',
         ];
     }
