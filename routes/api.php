@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\College\CourseController;
 use App\Http\Controllers\FruitsController;
@@ -73,3 +74,11 @@ Route::get('/films/get-genre/{genre_id}', [GenreController::class, 'getGenre']);
 Route::get('/films/get-all-genres', [GenreController::class, 'getAllGenres']);
 Route::put('/films/edit/{genre_id}', [GenreController::class, 'updateGenre']);
 Route::delete('/films/delete-genre/{genre_id}', [GenreController::class, 'deleteGenre']);
+
+Route::post('/auth/register', [AuthController::class, 'register']);
+Route::post('/auth/login', [AuthController::class, 'login']);
+// Rutas protegidas con Sanctum(autenticación)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/try', [AuthController::class, 'tryAuth']);
+});
