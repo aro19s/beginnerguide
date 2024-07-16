@@ -26,6 +26,7 @@ class AuthController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => 'required|string|min:6',
+                'role' => 'required|string|exists:roles,name',
             ]);
 
             // Acá encriptamos la contraseña para no guardarla tal cual en la base de datos
@@ -33,6 +34,9 @@ class AuthController extends Controller
 
             // Si la información validada está bien, procedemos a crear el usuario en la tabla 'users'
             $user = User::create($validatedData);
+
+            // Asignar el rol al usuario
+            $user->assignRole($request->input('role'));
 
             return response()->json([
                 'success' => true,
@@ -121,6 +125,42 @@ class AuthController extends Controller
     {
         try {
             dd($request->user());
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Probar RolesyPermisos
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function tryRoleAdmin(Request $request): JsonResponse
+    {
+        try {
+            dd("Hola, esta api es sólo para Admins.");
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Probar RolesyPermisos
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function tryRoleUser(Request $request): JsonResponse
+    {
+        try {
+            dd("Hola, esta api es para cualquier usuario en general.");
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,

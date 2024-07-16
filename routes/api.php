@@ -69,11 +69,15 @@ Route::get('/films/get-movie/{movie_id}', [MovieController::class, 'getMovie']);
 Route::get('/films/get-all-movies', [MovieController::class, 'getAllMovies']);
 Route::put('/films/edit-movie-with-pivot/{movie_id}', [MovieController::class, 'updateMovieWithPivot']);
 
-Route::post('/films/create-genre', [GenreController::class, 'createGenre']);
-Route::get('/films/get-genre/{genre_id}', [GenreController::class, 'getGenre']);
-Route::get('/films/get-all-genres', [GenreController::class, 'getAllGenres']);
-Route::put('/films/edit/{genre_id}', [GenreController::class, 'updateGenre']);
-Route::delete('/films/delete-genre/{genre_id}', [GenreController::class, 'deleteGenre']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware(['role:director'])->group(function () {
+        Route::post('/films/create-genre', [GenreController::class, 'createGenre']);
+        Route::put('/films/edit/{genre_id}', [GenreController::class, 'updateGenre']);
+        Route::delete('/films/delete-genre/{genre_id}', [GenreController::class, 'deleteGenre']);
+    });
+    Route::get('/films/get-genre/{genre_id}', [GenreController::class, 'getGenre'])->middleware('permission:api para general');
+    Route::get('/films/get-all-genres', [GenreController::class, 'getAllGenres'])->middleware('permission:api para general');
+});
 
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
@@ -81,4 +85,10 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::post('/auth/try', [AuthController::class, 'tryAuth']);
+    // Ruta protegida con permiso 'usar api general'
+    Route::post('/auth/tryRoleUser', [AuthController::class, 'tryRoleUser'])->middleware('permission:usar api general');
+    // Grupo de rutas protegidas con el rol admin (autorización)
+    Route::middleware(['role:admin'])->group(function () {
+        Route::post('/auth/tryRoleAdmin', [AuthController::class, 'tryRoleAdmin']);
+    });
 });

@@ -14,6 +14,9 @@ class DatabaseSeeder extends Seeder
     {
         // Llama al seeder que deseas ejecutar
         $this->call([
+            RolesAndPermissionsSeeder::class,
+            FilmRolesAndPermissionsSeeder::class,
+            FilmUsersTableSeeder::class,
             UsersTableSeeder::class,
             MoviesTableSeeder::class,
             GenresTableSeeder::class,
